@@ -137,8 +137,11 @@ class World():
         return self.rooms
         return self.grid
 '''
-This method still allows for new rooms to overwrite old ones, which ruins it.
+This method still allows for new rooms to overwrite old ones if north and west
+are allowed.
+When making a new room, choices are limited to just south and east, which will
+make a long snakey set of rooms from top left to bottom right.
 '''
-n = 500 # Number of rooms goes here
+n = 50 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
