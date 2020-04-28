@@ -60,79 +60,85 @@ class World():
         self.x_max = 0
         self.y_max = 0
 
+    # def check_space(self, room, )
+
     def make_rooms(self, room_max):
-        self.grid = [None] * room_max
-        for i in range( len(self.grid) ):
-            self.grid[i] = [None] * room_max
-        self.rooms = [None]
+        self.grid = [0]
+        self.rooms = []
         self.x_max = room_max
         self.y_max = room_max
 
         room_names = ("name1", "name2", "name3", "foyer")
         room_descriptions = ("desc1", "desc2", "desc3", "it's musty in here.")
 
-        room_count = 0
+        room_count = 2
         # Establish starting room
-        entry_room = Room(id = 0, name = "Entry", description = "This is the start", x = 0, y = 0)
+        entry_room = Room(id = 1, name = "Entry", description = "This is the start", x = 0, y = 0)
 
         previous_room = entry_room
-        id = 0
-        x = 1
-        y = 1
+        x = 0
+        y = 0
         x_max = 1
         y_max = 1
-        x_min = 0
-        y_min = 0
-        # Loop will create rooms one at a time in a random available direction
+        allowed_dir = ("n", "e", "s", "w")
         self.rooms = [entry_room]
-        while room_count < room_max:
-            id = previous_room.id
+
+        # While loop to make a list of rooms with unique id's
+        while room_count < room_max + 2:
             # Set a random direction in an allowed direction
-            if x > 0 and y > 0:
-                rand_dir = rd.randint(0,3)
-            else:
-                rand_dir = rd.randint(0,1)
+            # if x > 0 and y > 0:
+            #     dir = rd.choice(allowed_dir)
+            # else:
+            #     dir = rd.choice(("s", "e"))
 
-            # change the location
-            if rand_dir == 2:
-                dir = "n"
+            dir = rd.choice(("s", "e"))
+            # Limiting the direction options to south and east so that it works
+            # while I fix the overwriting problem
+
+            # change the location, and change the allowed directions to prohibit
+            # overwriting by backtrack
+            if dir == "n":
                 y -= 1
-            elif rand_dir == 1:
-                dir = "e"
+                allowed_dir = ("n", "e", "w")
+            elif dir == "e":
                 x += 1
-                # if x > x_max:
-                #     x_max = x
-                #     self.grid.resize(x_max,y_max)
-            elif rand_dir == 0:
-                dir = "s"
+                allowed_dir = ("n", "s", "e")
+                if x > x_max:
+                    x_max = x
+            elif dir == "s":
                 y += 1
-                # if y > y_max:
-                #     self.grid.resize(x_max,y_max)
-                #     y_max = y
+                allowed_dir = ("e", "s", "w")
+                if y > y_max:
+                    y_max = y
             else:
-                dir = "w"
                 x -= 1
-
-            # Expand the grid if a new room will be placed outside of it
+                allowed_dir = ("n", "s", "w")
 
 
             room = Room(id = room_count, name = rd.choice(room_names), description = rd.choice(room_descriptions),
                         x = x, y = y)
 
-            # if self.grid[y,x] == 0:
-            #     self.grid[y,x] = room.id
-
-
             previous_room.connect_rooms(room, dir)
             previous_room = room
 
             self.rooms.append(room)
-            self.grid[y][x] = room.id
+
             # return room_list
             room_count += 1
+
+        self.grid = [0] * (y_max+1)
+        for i in range(len(self.grid)):
+            self.grid[i] = [0] * (x_max+1)
+        for room in self.rooms:
+            self.grid[room.y][room.x] = room.id
+
+        for i in self.grid:
+            print(i)
         return self.rooms
         return self.grid
-
-n = 10 # Number of rooms goes here
+'''
+This method still allows for new rooms to overwrite old ones, which ruins it.
+'''
+n = 500 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
