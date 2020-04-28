@@ -1,23 +1,6 @@
 import random as rd
-import pandas as pd
 import numpy as np
-
-class Bin():
-    def __init__(self, items = None):
-        if not items:
-            self.items = []
-        else:
-            self.items = items
-
-class Player(Bin):
-    def __init__(self, name, c_room, items=None):
-        super().__init__(items)
-        self.name = name
-        self.c_room = c_room
-
-    def __str__(self):
-        p = "Thou art in"+str(self.c_room) + "\n" + "In thy bag ye have:\n" + "\n".join([str(i) for i in self.items])
-        return p
+import sys
 
 class Room():
 
@@ -60,8 +43,6 @@ class World():
         self.x_max = 0
         self.y_max = 0
 
-    # def check_space(self, room, )
-
     def make_rooms(self, room_max):
         self.grid = [0]
         self.rooms = []
@@ -83,39 +64,22 @@ class World():
         allowed_dir = ("n", "e", "s", "w")
         self.rooms = [entry_room]
 
-        # While loop to make a list of rooms with unique id's
-        while room_count < room_max + 2:
-            # Set a random direction in an allowed direction
-            # if x > 0 and y > 0:
-            #     dir = rd.choice(allowed_dir)
-            # else:
-            #     dir = rd.choice(("s", "e"))
-
+        main_room_count = room_max // 3
+        # While loop to make a 'backbone' list of rooms with unique id's
+        while room_count < main_room_count:
+            # Set a random direction
             dir = rd.choice(("s", "e"))
-            # Limiting the direction options to south and east so that it works
-            # while I fix the overwriting problem
-
-            # change the location, and change the allowed directions to prohibit
-            # overwriting by backtrack
-            if dir == "n":
-                y -= 1
-                allowed_dir = ("n", "e", "w")
-            elif dir == "e":
+            if dir == "e":
                 x += 1
-                allowed_dir = ("n", "s", "e")
                 if x > x_max:
                     x_max = x
-            elif dir == "s":
+            if dir == "s":
                 y += 1
-                allowed_dir = ("e", "s", "w")
                 if y > y_max:
                     y_max = y
-            else:
-                x -= 1
-                allowed_dir = ("n", "s", "w")
 
-
-            room = Room(id = room_count, name = rd.choice(room_names), description = rd.choice(room_descriptions),
+            room = Room(id = room_count, name = rd.choice(room_names),
+                        description = rd.choice(room_descriptions),
                         x = x, y = y)
 
             previous_room.connect_rooms(room, dir)
@@ -123,8 +87,11 @@ class World():
 
             self.rooms.append(room)
 
-            # return room_list
+            # increase room_count and start over
             room_count += 1
+
+        # After building a backbone, store room indexes in their positions in a
+        # grid, for use in checking for overwrite conflicts and making a visual
 
         self.grid = [0] * (y_max+1)
         for i in range(len(self.grid)):
@@ -132,16 +99,64 @@ class World():
         for room in self.rooms:
             self.grid[room.y][room.x] = room.id
 
-        for i in self.grid:
-            print(i)
+        # Main cooridor is completed, and a grid is populated with room indecies
+        # and empty spaces
+
+        # Make a new while loop to make rooms branching off of existing rooms
+        while room_count >= main_room_count and room_count < room_max:
+            # select random room to snake off of
+            allowed_dir = []
+            while allowed_dir == []:
+                start_id = rd.randint(1,room_count-1)
+                previous_room = self.rooms[start_id]
+                x = previous_room.x
+                y = previous_room.y
+                # Set allowed directions
+                if y+1 < y_max:
+                    if self.grid[y+1][x] == 0:
+                        allowed_dir.append("s")
+                if y-1 > 0:
+                    if self.grid[y-1][x] == 0:
+                        allowed_dir.append("n")
+                if x+1 < x_max:
+                    if self.grid[y][x+1] == 0:
+                        allowed_dir.append("e")
+                if x-1 > 0:
+                    if self.grid[y][x-1] == 0:
+                        allowed_dir.append("w")
+                if allowed_dir != []:
+                    dir = rd.choice(allowed_dir)
+                    if dir == "n":
+                        y -= 1
+                    if dir == "s":
+                        y += 1
+                    if dir == "e":
+                        x += 1
+                    if dir == "w":
+                        x -= 1
+
+                    room = Room(id = room_count+1, name = rd.choice(room_names),
+                                description = rd.choice(room_descriptions),
+                                x = x, y = y)
+                    previous_room.connect_rooms(room, dir)
+                    self.rooms.append(room)
+                    self.grid[y][x] = room.id
+                    room_count = len(self.rooms)
+
+        grid = np.array(self.grid)
+        np.set_printoptions(threshold=sys.maxsize)
+        print(grid)
+        room_dictionaries = []
+        r_dict = {}
+        for room in self.rooms:
+            r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
+                    'x': room.x, 'y': room.y}
+            room_dictionaries.append(dict(r_dict))
+        return room_dictionaries
         return self.rooms
         return self.grid
-'''
-This method still allows for new rooms to overwrite old ones if north and west
-are allowed.
-When making a new room, choices are limited to just south and east, which will
-make a long snakey set of rooms from top left to bottom right.
-'''
-n = 50 # Number of rooms goes here
+
+
+n = 100 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
