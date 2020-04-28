@@ -146,13 +146,13 @@ class World():
         grid = np.array(self.grid)
         np.set_printoptions(threshold=sys.maxsize)
         print(grid)
-        room_dictionaries = []
+        self.room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
             r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
                     'x': room.x, 'y': room.y}
-            room_dictionaries.append(dict(r_dict))
-        return room_dictionaries
+            self.room_dictionaries.append(dict(r_dict))
+        return self.room_dictionaries
         return self.rooms
         return self.grid
 
