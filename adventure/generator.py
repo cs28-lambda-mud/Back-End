@@ -34,7 +34,26 @@ class Room():
         '''
         return getattr(self, f"{direction}_to")
 
-
+def room_check(grids, x, y, x_max, y_max):
+    if x == 0:
+        new_dirs = []
+    elif y == 0:
+        new_dirs = []
+    elif x == x_max:
+        new_dirs = []
+    elif y == y_max:
+        new_dirs = []
+    else:
+        new_dirs = ["n", "e", "s", "w"]
+        if grids[y-1][x] != 0:
+            new_dirs.remove("n")
+        if grids[y+1][x] != 0:
+            new_dirs.remove("s")
+        if grids[y][x-1] != 0:
+            new_dirs.remove("w")
+        if grids[y][x+1] != 0:
+            new_dirs.remove("e")
+    return new_dirs
 
 class World():
     def __init__(self):
@@ -52,7 +71,7 @@ class World():
         room_names = ("name1", "name2", "name3", "foyer")
         room_descriptions = ("desc1", "desc2", "desc3", "it's musty in here.")
 
-        room_count = 2
+        room_count = 1
         # Establish starting room
         entry_room = Room(id = 1, name = "Entry", description = "This is the start", x = 0, y = 0)
 
@@ -61,10 +80,10 @@ class World():
         y = 0
         x_max = 1
         y_max = 1
-        allowed_dir = ("n", "e", "s", "w")
+        base_dir = ["n", "e", "s", "w"]
         self.rooms = [entry_room]
 
-        main_room_count = room_max // 3
+        main_room_count = room_max // 5
         # While loop to make a 'backbone' list of rooms with unique id's
         while room_count < main_room_count:
             # Set a random direction
@@ -78,7 +97,7 @@ class World():
                 if y > y_max:
                     y_max = y
 
-            room = Room(id = room_count, name = rd.choice(room_names),
+            room = Room(id = room_count + 1, name = rd.choice(room_names),
                         description = rd.choice(room_descriptions),
                         x = x, y = y)
 
@@ -103,60 +122,56 @@ class World():
         # and empty spaces
 
         # Make a new while loop to make rooms branching off of existing rooms
+        allowed_dir = []
+        start_id = rd.randint(1,room_count-1)
+        previous_room = self.rooms[start_id]
+        x = previous_room.x
+        y = previous_room.y
+        allowed_dir = room_check(self.grid, x, y, x_max, y_max)
+
         while room_count >= main_room_count and room_count < room_max:
-            # select random room to snake off of
-            allowed_dir = []
-            while allowed_dir == []:
-                start_id = rd.randint(1,room_count-1)
+            allowed_dir = room_check(self.grid, x, y, x_max, y_max)
+            if allowed_dir != []:
+                dir = rd.choice(allowed_dir)
+                if dir == "n":
+                    y -= 1
+                if dir == "s":
+                    y += 1
+                if dir == "e":
+                    x += 1
+                if dir == "w":
+                    x -= 1
+
+                room = Room(id = room_count+1, name = rd.choice(room_names),
+                        description = rd.choice(room_descriptions),
+                        x = x, y = y)
+                previous_room.connect_rooms(room, dir)
+                self.rooms.append(room)
+                self.grid[y][x] = room.id
+                previous_room = room
+                room_count += 1
+
+            else:
+                start_id = rd.randint(1,room_count-5)
                 previous_room = self.rooms[start_id]
                 x = previous_room.x
                 y = previous_room.y
-                # Set allowed directions
-                if y+1 < y_max:
-                    if self.grid[y+1][x] == 0:
-                        allowed_dir.append("s")
-                if y-1 > 0:
-                    if self.grid[y-1][x] == 0:
-                        allowed_dir.append("n")
-                if x+1 < x_max:
-                    if self.grid[y][x+1] == 0:
-                        allowed_dir.append("e")
-                if x-1 > 0:
-                    if self.grid[y][x-1] == 0:
-                        allowed_dir.append("w")
-                if allowed_dir != []:
-                    dir = rd.choice(allowed_dir)
-                    if dir == "n":
-                        y -= 1
-                    if dir == "s":
-                        y += 1
-                    if dir == "e":
-                        x += 1
-                    if dir == "w":
-                        x -= 1
-
-                    room = Room(id = room_count+1, name = rd.choice(room_names),
-                                description = rd.choice(room_descriptions),
-                                x = x, y = y)
-                    previous_room.connect_rooms(room, dir)
-                    self.rooms.append(room)
-                    self.grid[y][x] = room.id
-                    room_count = len(self.rooms)
 
         grid = np.array(self.grid)
         np.set_printoptions(threshold=sys.maxsize)
         print(grid)
-        self.room_dictionaries = []
+        print("There are", len(self.rooms), "rooms.")
+        room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
             r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
                     'x': room.x, 'y': room.y}
-            self.room_dictionaries.append(dict(r_dict))
-        return self.room_dictionaries
+            room_dictionaries.append(dict(r_dict))
+        return room_dictionaries
         return self.rooms
         return self.grid
 
 
-n = 100 # Number of rooms goes here
+n = 500 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
