@@ -2,7 +2,7 @@ import random as rd
 import numpy as np
 import sys
 from time import process_time
-from smurf_asset_lists import *
+from flavor_lists import *
 tic = process_time()
 
 class Room():
@@ -64,7 +64,6 @@ def name_gen():
         if houses != []:
             m = rd.choice(houses)
             houses.remove(m)
-            m = m.capitalize()
             b_name = f"{m} Smurf's house"
         elif extra_adjectives != []:
             m = rd.choice(extra_adjectives)
@@ -125,8 +124,8 @@ class World():
                 if y > y_max:
                     y_max = y
 
-            room = Room(id = room_count + 1, name = name_gen(),
-                        description = desc_gen(),
+            room = Room(id = room_count + 1, name = "Smurf Main Street",
+                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.",
                         x = x, y = y)
 
             previous_room.connect_rooms(room, dir)
@@ -169,10 +168,15 @@ class World():
                     x += 1
                 if dir == "w":
                     x -= 1
-
-                room = Room(id = room_count+1, name = name_gen(),
-                        description = desc_gen(),
-                        x = x, y = y)
+                dead_end_check = room_check(self.grid, x, y, x_max, y_max)
+                if dead_end_check != []:
+                    room = Room(id = room_count+1, name = "Smurf dirt road",
+                            description = "a dirt path branching off of the main smurf street.",
+                            x = x, y = y)
+                else:
+                    room = Room(id = room_count+1, name = name_gen(),
+                            description = desc_gen(),
+                            x = x, y = y)
                 previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
@@ -200,7 +204,7 @@ class World():
         return self.rooms
         return self.grid
 
-n = 500 # Number of rooms goes here
+n = 120 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
 toc = process_time()
