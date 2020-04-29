@@ -35,13 +35,7 @@ class Room():
         return getattr(self, f"{direction}_to")
 
 def room_check(grids, x, y, x_max, y_max):
-    if x == 0:
-        new_dirs = []
-    elif y == 0:
-        new_dirs = []
-    elif x == x_max:
-        new_dirs = []
-    elif y == y_max:
+    if x == 0 or y == 0 or x == x_max or y == y_max:
         new_dirs = []
     else:
         new_dirs = ["n", "e", "s", "w"]
@@ -161,17 +155,17 @@ class World():
         np.set_printoptions(threshold=sys.maxsize)
         print(grid)
         print("There are", len(self.rooms), "rooms.")
-        room_dictionaries = []
+        self.room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
             r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
                     'x': room.x, 'y': room.y}
-            room_dictionaries.append(dict(r_dict))
-        return room_dictionaries
+            self.room_dictionaries.append(dict(r_dict))
+        return self.room_dictionaries
         return self.rooms
         return self.grid
 
 
-n = 500 # Number of rooms goes here
+n = 5000 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
