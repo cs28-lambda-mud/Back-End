@@ -1,6 +1,9 @@
 import random as rd
 import numpy as np
 import sys
+from time import process_time
+from flavor_lists import *
+tic = process_time()
 
 class Room():
 
@@ -49,6 +52,36 @@ def room_check(grids, x, y, x_max, y_max):
             new_dirs.remove("e")
     return new_dirs
 
+houses = houses_list
+extra_adjectives = extra_adjectives_list
+buildings = buildings_list
+
+def name_gen():
+    global houses
+    global extra_adjectives
+    b = rd.randint(1,3)
+    if b == 1 or b == 2:
+        if houses != []:
+            m = rd.choice(houses)
+            houses.remove(m)
+            b_name = f"{m} Smurf's house"
+        elif extra_adjectives != []:
+            m = rd.choice(extra_adjectives)
+            extra_adjectives.remove(m)
+            m = m.capitalize()
+            b_name = f"{m} Smurf's house"
+        else:
+            b_name = "An empty house"
+    if b == 3:
+        b_name = f"Smurf {rd.choice(buildings)}"
+    return b_name
+
+def desc_gen():
+    b_desc = f"{rd.choice(desc_start)} {rd.choice(desc_adj)}. {rd.choice(desc_mid)}  {rd.choice(desc_noun)} {rd.choice(desc_end)}."
+    return b_desc
+
+
+
 class World():
     def __init__(self):
         self.grid = None
@@ -91,8 +124,8 @@ class World():
                 if y > y_max:
                     y_max = y
 
-            room = Room(id = room_count + 1, name = rd.choice(room_names),
-                        description = rd.choice(room_descriptions),
+            room = Room(id = room_count + 1, name = "Smurf Main Street",
+                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.",
                         x = x, y = y)
 
             previous_room.connect_rooms(room, dir)
@@ -135,10 +168,15 @@ class World():
                     x += 1
                 if dir == "w":
                     x -= 1
-
-                room = Room(id = room_count+1, name = rd.choice(room_names),
-                        description = rd.choice(room_descriptions),
-                        x = x, y = y)
+                dead_end_check = room_check(self.grid, x, y, x_max, y_max)
+                if dead_end_check != []:
+                    room = Room(id = room_count+1, name = "Smurf dirt road",
+                            description = "a dirt path branching off of the main smurf street.",
+                            x = x, y = y)
+                else:
+                    room = Room(id = room_count+1, name = name_gen(),
+                            description = desc_gen(),
+                            x = x, y = y)
                 previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
@@ -161,11 +199,13 @@ class World():
             r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
                     'x': room.x, 'y': room.y}
             self.room_dictionaries.append(dict(r_dict))
+        print(rd.choice(self.room_dictionaries))
         return self.room_dictionaries
         return self.rooms
         return self.grid
 
-
-n = 5000 # Number of rooms goes here
+n = 120 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
+toc = process_time()
+print("World built in", toc - tic, "seconds.")
