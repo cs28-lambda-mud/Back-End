@@ -68,7 +68,7 @@ class World():
         x_max = 1
         y_max = 1
         base_dir = ["n", "e", "s", "w"]
-        self.rooms = [entry_room]
+        self.rooms.append(entry_room)
 
         # While loop to make a 'main street' list of rooms with unique id's
         while room_count < room_max // 5:
@@ -161,6 +161,8 @@ class World():
         # print(f"There are {road_count} roads and {building_count} buildings.")
         self.room_dictionaries = []
         r_dict = {}
+        self.rooms[0].s_to = self.grid[1][0]
+        self.rooms[0].e_to = self.grid[0][1]
         for i in self.rooms:
             if 0<i.x<x_max:
                 i.e_to = self.grid[i.y][i.x+1]
@@ -178,7 +180,7 @@ class World():
         #return self.rooms
         # return self.grid
 
-n = 120 # Number of rooms goes here
+n = 100 # Number of rooms goes here
 w = World()
 w.make_rooms(n)
 toc = process_time()

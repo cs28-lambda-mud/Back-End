@@ -71,7 +71,7 @@ def rooms(request):
     for room in rooms:
         r_dict = {'id': room.id, 'title': room.title, 'description': room.description,'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
         result.append(r_dict)
-    print(result)
+    #print(result)
 
     return JsonResponse({"grid": result})
 
