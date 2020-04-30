@@ -85,7 +85,7 @@ class World():
 
             room = Room(id = room_count + 1, title = "Smurf Main Street",
                         description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.", x = x, y = y)
-
+            room.save()
             # previous_room.connect_rooms(room, dir)
             previous_room = room
 
@@ -129,11 +129,11 @@ class World():
                 chance = rd.randint(1,100)
                 if dead_end_check != [] and chance <=70:
                     room = Room(id = room_count+1, title = "Smurf dirt road",
-                            description = "A dirt Smurf path branching off of the main Smurf street.", x = x, y = y)
+                            description = "A dirt Smurf path branching off of the main Smurf street.", x = x, y = y)  
                 else:
                     room = Room(id = room_count+1, title = name_gen(),
-                            description = desc_gen(), x = x, y = y)
-
+                            description = desc_gen(), x = x, y = y) 
+                
                 # previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
@@ -169,7 +169,8 @@ class World():
                 i.n_to = self.grid[i.y-1][i.x]
                 i.s_to = self.grid[i.y+1][i.x]
         for room in self.rooms:
-            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
+            r = Room(id= room.id, title= room.title, description=room.description, x=room.x, y=room.y, n_to=room.n_to, e_to=room.e_to, s_to=room.s_to, w_to=room.w_to )
+            r.save()
 
             self.room_dictionaries.append(r_dict)
         #print(rd.choice(self.room_dictionaries))
