@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 import random as rd
 import sys
 from time import process_time
@@ -155,17 +155,17 @@ class World():
                 x = previous_room.x
                 y = previous_room.y
 
-        grid = np.array(self.grid)
-        np.set_printoptions(threshold=sys.maxsize)
-        print(grid)
-        print("There are", len(self.rooms), "rooms.")
+        #grid = np.array(self.grid)
+        #np.set_printoptions(threshold=sys.maxsize)
+        #print(grid)
+        #print("There are", len(self.rooms), "rooms.")
         self.room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
             r_dict = {'id': room.id, 'title': room.title, 'description': room.description,
                     'x': room.x, 'y': room.y}
             self.room_dictionaries.append(dict(r_dict))
-        print(rd.choice(self.room_dictionaries))
+        #print(rd.choice(self.room_dictionaries))
         return self.room_dictionaries
         return self.rooms
         return self.grid

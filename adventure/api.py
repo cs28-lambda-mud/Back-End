@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from decouple import config
 from django.contrib.auth.models import User
 from .models import *
+from .generator import *
 from rest_framework.decorators import api_view
 import json
 
@@ -59,6 +60,13 @@ def move(request):
         players = room.playerNames(player_id)
         return JsonResponse({'name':player.user.username, 'title':room.title, 'description':room.description, 'players':players, 'error_msg':"You cannot move that way."}, safe=True)
 
+
+@api_view(["GET"])
+def rooms(request):
+    w = World()
+    w.make_rooms(120)
+    print(w)
+    return JsonResponse({"hello world": "guttentag"})
 
 @csrf_exempt
 @api_view(["POST"])
