@@ -150,6 +150,7 @@ class World():
         #grid = np.array(self.grid)
         #np.set_printoptions(threshold=sys.maxsize)
         #print(grid)
+
         # road_count = 0
         # building_count = 0
         # for i in self.rooms:
@@ -169,6 +170,7 @@ class World():
                 i.s_to = self.grid[i.y+1][i.x]
         for room in self.rooms:
             r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
+
             self.room_dictionaries.append(r_dict)
         #print(rd.choice(self.room_dictionaries))
         return self.room_dictionaries
