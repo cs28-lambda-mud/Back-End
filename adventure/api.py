@@ -72,8 +72,9 @@ def rooms(request):
         r_dict = {'id': room.id, 'title': room.title, 'description': room.description,'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
         result.append(r_dict)
     #print(result)
+    sorted_results = sorted(result, key=lambda object: object["id"])
 
-    return JsonResponse({"grid": result})
+    return JsonResponse({"grid": sorted_results})
 
 @csrf_exempt
 @api_view(["POST"])
