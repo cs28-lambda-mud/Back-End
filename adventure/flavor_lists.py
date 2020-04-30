@@ -1,4 +1,4 @@
-houses = ["Papa", "Jokey", "Brainy", "Clumsy", "Grouchy", "Hefty", "Greedy",
+houses = ["Papa", "Jokey", "Brainy", "Clumsy", "Grouchy", "Hefty", "Greedy"
         "Handy", "Baby", "Farmer", "Baker", "Vain", "Finance", "Painter",
         "Poet", "Harmony", "Gutsy", "Chef", "Narrator", "Nosey", "Panicky",
         "Crazy"]
