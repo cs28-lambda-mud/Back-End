@@ -15,6 +15,8 @@ class Room(models.Model):
     s_to = models.IntegerField(default=0)
     e_to = models.IntegerField(default=0)
     w_to = models.IntegerField(default=0)
+
+
     def connect_rooms(self, connecting_room, direction):
         '''
         Connect two rooms in the given n/s/e/w direction

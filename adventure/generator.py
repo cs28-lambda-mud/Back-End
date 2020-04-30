@@ -149,9 +149,9 @@ class World():
                 y = previous_room.y
 
         #print("There are", len(self.rooms), "rooms.")
-        grid = np.array(self.grid)
-        np.set_printoptions(threshold=sys.maxsize)
-        print(grid)
+        #grid = np.array(self.grid)
+        #np.set_printoptions(threshold=sys.maxsize)
+        #print(grid)
         road_count = 0
         building_count = 0
         for i in self.rooms:
@@ -161,15 +161,14 @@ class World():
                 building_count +=1
         print(f"There are {road_count} roads and {building_count} buildings.")
         self.room_dictionaries = []
-        r_dict = {}
+        #r_dict = {}
         for room in self.rooms:
-            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'type': room.type, 'x': room.x, 'y': room.y}
-            self.room_dictionaries.append(dict(r_dict))
+            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'type': room.type, 'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
+            self.room_dictionaries.append(r_dict)
         #print(rd.choice(self.room_dictionaries))
-        self.rooms.save()
         return self.room_dictionaries
-        return self.rooms
-        return self.grid
+        #return self.rooms
+        # return self.grid
 
 n = 120 # Number of rooms goes here
 w = World()

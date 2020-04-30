@@ -64,9 +64,18 @@ def move(request):
 @api_view(["GET"])
 def rooms(request):
     w = World()
-    w.make_rooms(120)
-    print(w)
-    return JsonResponse({"hello world": "guttentag"})
+    grid = w.make_rooms(120)
+    #json_string = json.dumps([ob.__dict__ for ob in w.rooms])
+    result = []
+    for key, value in grid[0].items():
+        print(key, type(value), value)
+
+    # for room in grid:
+    #     r_dict = {'id': room["id"], 'title': room["title"], 'description': room["description"], 'type': room["type"], 'x': room["x"], 'y': room["y"], 'n_to': room["n_to"], 'e_to': room["e_to"], 's_to': room["s_to"], 'w_to': room["w_to"] }
+    #     result.append(r_dict)
+    # print(result)
+
+    return JsonResponse({"hi": "ok"}, safe=False)
 
 @csrf_exempt
 @api_view(["POST"])
