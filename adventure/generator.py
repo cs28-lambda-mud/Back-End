@@ -1,41 +1,12 @@
-import random as rd
 import numpy as np
+import random as rd
 import sys
 from time import process_time
-from flavor_lists import *
+from adventure.flavor_lists import *
+from django.contrib.auth.models import User
+from adventure.models import Player, Room
+
 tic = process_time()
-
-class Room():
-
-    def __init__(self, id, name, description, x, y):
-        self.id = id
-        self.name = name
-        self.description = description
-        self.x = x
-        self.y = y
-        self.n_to = None
-        self.s_to = None
-        self.e_to = None
-        self.w_to = None
-
-    def __str__(self):
-        r = self.name + self.description
-        # + "\n".join([str(i)] for i in self.items)
-        return r
-
-    def connect_rooms(self, connecting_room, direction):
-        '''
-        Connect two rooms in the given n/s/e/w direction
-        '''
-        reverse_dirs = {"n": "s", "s": "n", "e": "w", "w": "e"}
-        reverse_dir = reverse_dirs[direction]
-        setattr(self, f"{direction}_to", connecting_room)
-        setattr(connecting_room, f"{reverse_dir}_to", self)
-    def get_room_in_direction(self, direction):
-        '''
-        Connect two rooms in the given n/s/e/w direction
-        '''
-        return getattr(self, f"{direction}_to")
 
 def room_check(grids, x, y, x_max, y_max):
     if x == 0 or y == 0 or x == x_max or y == y_max:
@@ -52,10 +23,6 @@ def room_check(grids, x, y, x_max, y_max):
             new_dirs.remove("e")
     return new_dirs
 
-houses = houses_list
-extra_adjectives = extra_adjectives_list
-buildings = buildings_list
-
 def name_gen():
     global houses
     global extra_adjectives
@@ -65,6 +32,7 @@ def name_gen():
             m = rd.choice(houses)
             houses.remove(m)
             b_name = f"{m} Smurf's house"
+
         elif extra_adjectives != []:
             m = rd.choice(extra_adjectives)
             extra_adjectives.remove(m)
@@ -77,10 +45,8 @@ def name_gen():
     return b_name
 
 def desc_gen():
-    b_desc = f"{rd.choice(desc_start)} {rd.choice(desc_adj)}. {rd.choice(desc_mid)}  {rd.choice(desc_noun)} {rd.choice(desc_end)}."
+    b_desc = f"{rd.choice(desc_start)} {rd.choice(desc_adj)}. {rd.choice(desc_mid)} {rd.choice(desc_noun)} {rd.choice(desc_end)}."
     return b_desc
-
-
 
 class World():
     def __init__(self):
@@ -100,7 +66,7 @@ class World():
 
         room_count = 1
         # Establish starting room
-        entry_room = Room(id = 1, name = "Entry", description = "This is the start", x = 0, y = 0)
+        entry_room = Room(id = 1, title = "Entry", description = "This is the start", x = 0, y = 0)
 
         previous_room = entry_room
         x = 0
@@ -124,7 +90,7 @@ class World():
                 if y > y_max:
                     y_max = y
 
-            room = Room(id = room_count + 1, name = "Smurf Main Street",
+            room = Room(id = room_count + 1, title = "Smurf Main Street",
                         description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.",
                         x = x, y = y)
 
@@ -170,11 +136,11 @@ class World():
                     x -= 1
                 dead_end_check = room_check(self.grid, x, y, x_max, y_max)
                 if dead_end_check != []:
-                    room = Room(id = room_count+1, name = "Smurf dirt road",
+                    room = Room(id = room_count+1, title = "Smurf dirt road",
                             description = "a dirt path branching off of the main smurf street.",
                             x = x, y = y)
                 else:
-                    room = Room(id = room_count+1, name = name_gen(),
+                    room = Room(id = room_count+1, title = name_gen(),
                             description = desc_gen(),
                             x = x, y = y)
                 previous_room.connect_rooms(room, dir)
@@ -196,7 +162,7 @@ class World():
         self.room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
-            r_dict = {'id': room.id, 'name': room.name, 'description': room.description,
+            r_dict = {'id': room.id, 'title': room.title, 'description': room.description,
                     'x': room.x, 'y': room.y}
             self.room_dictionaries.append(dict(r_dict))
         print(rd.choice(self.room_dictionaries))
