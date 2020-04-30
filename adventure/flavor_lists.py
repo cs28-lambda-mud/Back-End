@@ -5,9 +5,9 @@ houses = ["Papa", "Jokey", "Brainy", "Clumsy", "Grouchy", "Hefty", "Greedy"
 buildings = ["Church", "General Store", "Garden", "Town Hall", "Library",
     "Secret hole", "Prison", "School", "Office", "Gym", "Post office", "Fire department",
     "Restaurant", "Unholy Alter to the Profane God Grgammth", "Park", "Playground"]
-desc_start = ["It looks", "This buiding is remarkably"]
-desc_adj = ["tall", "rich looking", "ugly", "vandalized"]
-desc_mid = ["There is a", "It could use a"]
+desc_start = ["It looks", "This buiding is remarkably", "It is somewhat"]
+desc_adj = ["tall", "rich looking", "ugly", "vandalized", "flammable", "modern"]
+desc_mid = ["There is a", "It could use a", ""]
 desc_noun = ["light", "groundskeeper", "window", "new coat of paint"]
 desc_end = ["out back", "", "near the front door"]
 extra_adjectives = ["amused",

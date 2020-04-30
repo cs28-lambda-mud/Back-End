@@ -8,6 +8,7 @@ from adventure.models import Player, Room
 
 tic = process_time()
 
+
 def room_check(grids, x, y, x_max, y_max):
     if x == 0 or y == 0 or x == x_max or y == y_max:
         new_dirs = []
@@ -27,20 +28,16 @@ def name_gen():
     global houses
     global extra_adjectives
     b = rd.randint(1,3)
-    if b == 1 or b == 2:
-        if houses != []:
-            m = rd.choice(houses)
-            houses.remove(m)
-            b_name = f"{m} Smurf's house"
-
-        elif extra_adjectives != []:
-            m = rd.choice(extra_adjectives)
-            extra_adjectives.remove(m)
-            m = m.capitalize()
-            b_name = f"{m} Smurf's house"
-        else:
-            b_name = "An empty house"
-    if b == 3:
+    if houses != [] and b ==1:
+        m = rd.choice(houses)
+        houses.remove(m)
+        b_name = f"{m} Smurf's house"
+    elif extra_adjectives != [] and b == 2:
+        m = rd.choice(extra_adjectives)
+        extra_adjectives.remove(m)
+        m = m.capitalize()
+        b_name = f"{m} Smurf's house"
+    else:
         b_name = f"Smurf {rd.choice(buildings)}"
     return b_name
 
@@ -61,12 +58,9 @@ class World():
         self.x_max = room_max
         self.y_max = room_max
 
-        room_names = ("name1", "name2", "name3", "foyer")
-        room_descriptions = ("desc1", "desc2", "desc3", "it's musty in here.")
-
         room_count = 1
         # Establish starting room
-        entry_room = Room(id = 1, title = "Entry", description = "This is the start", x = 0, y = 0)
+        entry_room = Room(id = 1, title = "Smurf Gate", description = "Welcome to Smurfsville. There is no escape.", type ="b", x = 0, y = 0)
 
         previous_room = entry_room
         x = 0
@@ -76,9 +70,8 @@ class World():
         base_dir = ["n", "e", "s", "w"]
         self.rooms = [entry_room]
 
-        main_room_count = room_max // 5
-        # While loop to make a 'backbone' list of rooms with unique id's
-        while room_count < main_room_count:
+        # While loop to make a 'main street' list of rooms with unique id's
+        while room_count < room_max // 5:
             # Set a random direction
             dir = rd.choice(("s", "e"))
             if dir == "e":
@@ -91,7 +84,7 @@ class World():
                     y_max = y
 
             room = Room(id = room_count + 1, title = "Smurf Main Street",
-                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.",
+                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.", type ="r",
                         x = x, y = y)
 
             previous_room.connect_rooms(room, dir)
@@ -102,7 +95,7 @@ class World():
             # increase room_count and start over
             room_count += 1
 
-        # After building a backbone, store room indexes in their positions in a
+        # After building a main street, store room indexes in their positions in a
         # grid, for use in checking for overwrite conflicts and making a visual
 
         self.grid = [0] * (y_max+1)
@@ -115,16 +108,15 @@ class World():
         # and empty spaces
 
         # Make a new while loop to make rooms branching off of existing rooms
-        allowed_dir = []
         start_id = rd.randint(1,room_count-1)
         previous_room = self.rooms[start_id]
         x = previous_room.x
         y = previous_room.y
         allowed_dir = room_check(self.grid, x, y, x_max, y_max)
 
-        while room_count >= main_room_count and room_count < room_max:
+        while room_count >= room_max // 5 and room_count < room_max:
             allowed_dir = room_check(self.grid, x, y, x_max, y_max)
-            if allowed_dir != []:
+            if allowed_dir != [] and previous_room.type == "r":
                 dir = rd.choice(allowed_dir)
                 if dir == "n":
                     y -= 1
@@ -135,14 +127,15 @@ class World():
                 if dir == "w":
                     x -= 1
                 dead_end_check = room_check(self.grid, x, y, x_max, y_max)
-                if dead_end_check != []:
+                chance = rd.randint(1,100)
+                if dead_end_check != [] and chance <=80:
                     room = Room(id = room_count+1, title = "Smurf dirt road",
-                            description = "a dirt path branching off of the main smurf street.",
-                            x = x, y = y)
+                            description = "A dirt Smurf path branching off of the main Smurf street.", type ="r", x = x, y = y)
                 else:
                     room = Room(id = room_count+1, title = name_gen(),
-                            description = desc_gen(),
+                            description = desc_gen(), type ="b",
                             x = x, y = y)
+
                 previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
@@ -154,16 +147,21 @@ class World():
                 previous_room = self.rooms[start_id]
                 x = previous_room.x
                 y = previous_room.y
-
         grid = np.array(self.grid)
         np.set_printoptions(threshold=sys.maxsize)
         print(grid)
-        print("There are", len(self.rooms), "rooms.")
+        road_count = 0
+        building_count = 0
+        for i in self.rooms:
+            if i.type == "r":
+                road_count +=1
+            else:
+                building_count +=1
+        print(f"There are {road_count} roads and {building_count} buildings.")
         self.room_dictionaries = []
         r_dict = {}
         for room in self.rooms:
-            r_dict = {'id': room.id, 'title': room.title, 'description': room.description,
-                    'x': room.x, 'y': room.y}
+            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'type': room.type, 'x': room.x, 'y': room.y}
             self.room_dictionaries.append(dict(r_dict))
         print(rd.choice(self.room_dictionaries))
         return self.room_dictionaries
