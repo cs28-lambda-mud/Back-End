@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 import random as rd
 import sys
 from time import process_time
@@ -60,7 +60,7 @@ class World():
 
         room_count = 1
         # Establish starting room
-        entry_room = Room(id = 1, title = "Smurf Gate", description = "Welcome to Smurfsville. There is no escape.", type ="b", x = 0, y = 0)
+        entry_room = Room(id = 1, title = "Smurf Gate", description = "Welcome to Smurfsville. There is no escape.", x = 0, y = 0)
 
         previous_room = entry_room
         x = 0
@@ -84,10 +84,9 @@ class World():
                     y_max = y
 
             room = Room(id = room_count + 1, title = "Smurf Main Street",
-                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.", type ="r",
-                        x = x, y = y)
+                        description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.", x = x, y = y)
 
-            previous_room.connect_rooms(room, dir)
+            # previous_room.connect_rooms(room, dir)
             previous_room = room
 
             self.rooms.append(room)
@@ -116,7 +115,7 @@ class World():
 
         while room_count >= room_max // 5 and room_count < room_max:
             allowed_dir = room_check(self.grid, x, y, x_max, y_max)
-            if allowed_dir != [] and previous_room.type == "r":
+            if allowed_dir != []:
                 dir = rd.choice(allowed_dir)
                 if dir == "n":
                     y -= 1
@@ -128,15 +127,14 @@ class World():
                     x -= 1
                 dead_end_check = room_check(self.grid, x, y, x_max, y_max)
                 chance = rd.randint(1,100)
-                if dead_end_check != [] and chance <=80:
+                if dead_end_check != [] and chance <=70:
                     room = Room(id = room_count+1, title = "Smurf dirt road",
-                            description = "A dirt Smurf path branching off of the main Smurf street.", type ="r", x = x, y = y)
+                            description = "A dirt Smurf path branching off of the main Smurf street.", x = x, y = y)
                 else:
                     room = Room(id = room_count+1, title = name_gen(),
-                            description = desc_gen(), type ="b",
-                            x = x, y = y)
+                            description = desc_gen(), x = x, y = y)
 
-                previous_room.connect_rooms(room, dir)
+                # previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
                 previous_room = room
@@ -147,26 +145,35 @@ class World():
                 previous_room = self.rooms[start_id]
                 x = previous_room.x
                 y = previous_room.y
-        grid = np.array(self.grid)
-        np.set_printoptions(threshold=sys.maxsize)
-        print(grid)
-        road_count = 0
-        building_count = 0
-        for i in self.rooms:
-            if i.type == "r":
-                road_count +=1
-            else:
-                building_count +=1
-        print(f"There are {road_count} roads and {building_count} buildings.")
+
+        #print("There are", len(self.rooms), "rooms.")
+        #grid = np.array(self.grid)
+        #np.set_printoptions(threshold=sys.maxsize)
+        #print(grid)
+        # road_count = 0
+        # building_count = 0
+        # for i in self.rooms:
+        #     if i.type == "r":
+        #         road_count +=1
+        #     else:
+        #         building_count +=1
+        # print(f"There are {road_count} roads and {building_count} buildings.")
         self.room_dictionaries = []
         r_dict = {}
+        for i in self.rooms:
+            if 0<i.x<x_max:
+                i.e_to = self.grid[i.y][i.x+1]
+                i.w_to = self.grid[i.y][i.x-1]
+            if 0<i.y<y_max:
+                i.n_to = self.grid[i.y-1][i.x]
+                i.s_to = self.grid[i.y+1][i.x]
         for room in self.rooms:
-            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'type': room.type, 'x': room.x, 'y': room.y}
-            self.room_dictionaries.append(dict(r_dict))
-        print(rd.choice(self.room_dictionaries))
+            r_dict = {'id': room.id, 'title': room.title, 'description': room.description, 'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
+            self.room_dictionaries.append(r_dict)
+        #print(rd.choice(self.room_dictionaries))
         return self.room_dictionaries
-        return self.rooms
-        return self.grid
+        #return self.rooms
+        # return self.grid
 
 n = 120 # Number of rooms goes here
 w = World()
