@@ -85,7 +85,7 @@ class World():
 
             room = Room(id = room_count + 1, title = "Smurf Main Street",
                         description = "Smurfsville's main road. It's paved with blue cobblestones and is well maintained by Maintenance Smurf. Smurf dirt roads branch off of it.", x = x, y = y)
-
+            room.save()
             # previous_room.connect_rooms(room, dir)
             previous_room = room
 
@@ -133,7 +133,7 @@ class World():
                 else:
                     room = Room(id = room_count+1, title = name_gen(),
                             description = desc_gen(), x = x, y = y)
-
+                room.save()
                 # previous_room.connect_rooms(room, dir)
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
@@ -177,8 +177,8 @@ class World():
         #return self.rooms
         # return self.grid
 
-n = 120 # Number of rooms goes here
-w = World()
-w.make_rooms(n)
-toc = process_time()
-print("World built in", toc - tic, "seconds.")
+# n = 120 # Number of rooms goes here
+# w = World()
+# w.make_rooms(n)
+# toc = process_time()
+# print("World built in", toc - tic, "seconds.")
