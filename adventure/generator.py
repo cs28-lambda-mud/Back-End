@@ -53,6 +53,7 @@ class World():
         self.y_max = 0
 
     def make_rooms(self, room_max):
+        Room.objects.all().delete()
         self.grid = [0]
         self.rooms = []
         self.x_max = room_max
