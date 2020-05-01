@@ -180,7 +180,7 @@ class World():
         #return self.rooms
         # return self.grid
 
-n = 100 # Number of rooms goes here!
+n = 500 # Number of rooms goes here!
 w = World()
 w.make_rooms(n)
 toc = process_time()
