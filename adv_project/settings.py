@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'adv_project.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 
-# MARK: -- on local machine, uncomment! if pushing please comment out
+#MARK: -- on local machine, uncomment! if pushing please comment out
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

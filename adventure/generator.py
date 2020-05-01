@@ -130,11 +130,10 @@ class World():
                 chance = rd.randint(1,100)
                 if dead_end_check != [] and chance <=70:
                     room = Room(id = room_count+1, title = "Smurf dirt road",
-                            description = "A dirt Smurf path branching off of the main Smurf street.", x = x, y = y)
+                            description = "A dirt Smurf path branching off of the main Smurf street.", x = x, y = y)  
                 else:
-                    room = Room(id = room_count+1, title = name_gen(),
-                            description = desc_gen(), x = x, y = y)
-
+                    room = Room(id = room_count+1, title = name_gen(), description = desc_gen(), x = x, y = y)
+                    
                 self.rooms.append(room)
                 self.grid[y][x] = room.id
                 previous_room = room
@@ -153,6 +152,8 @@ class World():
 
         self.room_dictionaries = []
         r_dict = {}
+        self.rooms[0].s_to = self.grid[1][0]
+        self.rooms[0].e_to = self.grid[0][1]
         for i in self.rooms:
             if 0<i.x:
                 i.w_to = self.grid[i.y][i.x-1]
