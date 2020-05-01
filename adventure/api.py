@@ -61,20 +61,20 @@ def move(request):
         return JsonResponse({'name':player.user.username, 'title':room.title, 'description':room.description, 'players':players, 'error_msg':"You cannot move that way."}, safe=True)
 
 
-# @api_view(["GET"])
-# def rooms(request):
-#     rooms = Room.objects.all()
-#     #json_string = json.dumps([ob.__dict__ for ob in w.rooms])
-#     result = []
-#     # # for key, value in grid[0].items():
-#     # #     print(key, type(value), value)
-#     for room in rooms:
-#         r_dict = {'id': room.id, 'title': room.title, 'description': room.description,'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
-#         result.append(r_dict)
-#     #print(result)
-#     sorted_results = sorted(result, key=lambda object: object["id"])
+@api_view(["GET"])
+def rooms(request):
+    rooms = Room.objects.all()
+    #json_string = json.dumps([ob.__dict__ for ob in w.rooms])
+    result = []
+    # # for key, value in grid[0].items():
+    # #     print(key, type(value), value)
+    for room in rooms:
+        r_dict = {'id': room.id, 'title': room.title, 'description': room.description,'x': room.x, 'y': room.y, 'n_to': room.n_to, 'e_to': room.e_to, 's_to': room.s_to, 'w_to': room.w_to }
+        result.append(r_dict)
+    #print(result)
+    sorted_results = sorted(result, key=lambda object: object["id"])
 
-#     return JsonResponse({"grid": sorted_results})
+    return JsonResponse({"grid": sorted_results})
 
 @csrf_exempt
 @api_view(["POST"])
