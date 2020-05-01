@@ -1,15 +1,15 @@
-houses = ["Papa", "Jokey", "Brainy", "Clumsy", "Grouchy", "Hefty", "Greedy"
+houses = ["Papa", "Jokey", "Brainy", "Clumsy", "Grouchy", "Hefty", "Greedy",
         "Handy", "Baby", "Farmer", "Baker", "Vain", "Finance", "Painter",
         "Poet", "Harmony", "Gutsy", "Chef", "Narrator", "Nosey", "Panicky",
         "Crazy"]
 buildings = ["Church", "General Store", "Garden", "Town Hall", "Library",
     "Secret hole", "Prison", "School", "Office", "Gym", "Post office", "Fire department",
     "Restaurant", "Unholy Alter to the Profane God Grgammth", "Park", "Playground"]
-desc_start = ["It looks", "This buiding is remarkably", "It is somewhat"]
-desc_adj = ["tall", "rich looking", "ugly", "vandalized", "flammable", "modern"]
-desc_mid = ["There is a", "It could use a", ""]
-desc_noun = ["light", "groundskeeper", "window", "new coat of paint"]
-desc_end = ["out back", "", "near the front door"]
+desc_start = ["It looks", "This buiding is remarkably", "It is somewhat", "It looks awfully"]
+desc_adj = ["beautiful", "rich looking", "ugly", "vandalized", "flammable", "modern", "uninhabitable", "cold"]
+desc_mid = ["There is a", "It could use a", "They should fix the broken", "It has a", "There is a lovely"]
+desc_noun = ["light", "groundskeeper", "window", "new coat of paint", "dog", "gazebo", "blood sacrifice"]
+desc_end = ["out back", "", "near the front door", "inside", "on the roof"]
 extra_adjectives = ["amused",
 "chivalrous",
 "fearless",
