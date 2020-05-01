@@ -1,3 +1,3 @@
 .env
 .DS_Store
-db.store3
+db.sqlite3
